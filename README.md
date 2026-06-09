@@ -156,7 +156,7 @@ See paper Table 1 for full comparison.
 
 ## License
 
-This project is provided for academic research purposes. See the LICENSE file for details (if applicable).
+This project is licensed under the [MIT License](LICENSE).
 
 ## Notes
 
