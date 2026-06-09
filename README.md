@@ -149,7 +149,7 @@ See paper Table 1 for full comparison.
 @article{que2025flashrt,
   title={FLASH-RT: A framework for online node anomaly detection in provenance graphs via trend calibration},
   author={Caizhong Que and Guangfang Dong},
-  year={2025},
+  year={2026},
   note={Under review}
 }
 ```
