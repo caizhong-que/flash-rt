@@ -1,0 +1,35 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+
+# Model checkpoints (large binary files, download separately)
+checkpoints/*.pth
+checkpoints/*.pkl
+checkpoints/**/*.pth
+checkpoints/**/*.pkl
+checkpoints/**/*.model
+!checkpoints/.gitkeep
+
+# Raw & processed data (large, download separately)
+data/OpTC/
+data/raw/
+data/processed/
+
+# Generated results
+results/*.json
+results/figures/
+*.xlsx
+
+# IDE / OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Output artifacts
+*.csv
