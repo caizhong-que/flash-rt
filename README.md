@@ -1,6 +1,12 @@
-﻿# FLASH-RT: Real-Time APT Detection in Provenance Graphs
+﻿# FLASH-RT: A Framework for Online Node Anomaly Detection in Provenance Graphs via Trend Calibration
 
-**FLASH** (**F**ast, **L**ightweight **A**nomaly Detection via **S**elf-Training and Transformer-based **H**euristics) is a real-time Advanced Persistent Threat (APT) detection system for provenance graphs. It combines Graph Neural Networks (GNN) with a non-stationary Transformer for high-accuracy streaming anomaly detection.
+**FLASH-RT** (Framework for online node anomaly detection in provenance graphs via trend calibration) is a lightweight anomaly detection framework for streaming provenance graphs. It addresses two key challenges in host-based intrusion detection:
+
+- **Progressive APT attacks & behavioral drift** – APT activities often span multiple time windows and exhibit weak, cumulative anomalies. FLASH-RT introduces a **trend calibration module** that models cross‑window node state sequences (anomaly score, confidence, entropy) to refine base detection results.
+- **Online inference efficiency** – Repeated graph encoding across consecutive windows is computationally expensive. FLASH-RT incorporates an **embedding reuse mechanism** via persistent node identifiers (PNI) and Jaccard‑based neighborhood matching, significantly reducing latency.
+
+This repository is the official implementation of the paper  
+*"FLASH-RT: A framework for online node anomaly detection in provenance graphs via trend calibration"* (Que & Dong, 2025, under review).
 
 ## Architecture
 
@@ -14,6 +20,17 @@ Raw CDM Logs (tar.gz) → CDMParser → Edge CSV
         Anomaly scoring via reconstruction error
     → Evaluation (2-hop relaxation metrics)
 ```
+
+**Key innovations:**
+- **Time‑aware sequential encoding** – Adds sinusoidal positional encoding to node semantic sequences to capture local event order.
+- **Trend calibration** – Models low‑dimensional node state sequences and uses reconstruction residuals to correct the base anomaly score, improving detection of progressive and subtle anomalies.
+- **Embedding reuse** – Reuses GraphSAGE embeddings for structurally stable nodes across windows via PNI matching and Jaccard index (only when $J_v = 1$).
+
+---
+
+## Project Structure
+
+
 
 ## Project Structure
 
@@ -113,26 +130,37 @@ cd experiments/optc
 python pipeline.py
 ```
 
-## Typical Results (Cadets E3)
+## Typical Results (from paper, Table 1)
 
-| Method | Precision | Recall | F1-Score |
-|--------|-----------|--------|----------|
-| GNN (p50) | 0.907 | 0.999 | 0.951 |
-| GNN (p95) | 0.988 | 0.999 | 0.993 |
-| FLASH (p50) | 0.989 | 0.999 | 0.994 |
-| FLASH (p95) | 0.996 | 0.999 | 0.997 |
+| Dataset (E3)       | Method       | Precision | Recall  | F1-Score |
+|--------------------|--------------|-----------|---------|----------|
+| Cadets             | ThreaTrace   | 0.9000    | 0.9900  | 0.9500   |
+|                    | FLASH        | 0.9276    | 0.9995  | 0.9622   |
+|                    | **FLASH-RT** | **1.0000**| **0.9993**| **0.9996**|
+| Trace              | **FLASH-RT** | 0.9427    | 1.0000  | 0.9705   |
+| Theia              | **FLASH-RT** | 0.9998    | 0.9989  | 0.9994   |
+
+On OpTC, FLASH‑RT achieves F1‑scores of 0.9290, 0.9242, 0.9613 across three attack scenarios.  
+See paper Table 1 for full comparison.
 
 ## Citation
 
 ```bibtex
-@article{flash-rt,
-  title={FLASH-RT: Real-Time APT Detection in Provenance Graphs via
-         Self-Training and Non-Stationary Transformers},
+@article{que2025flashrt,
+  title={FLASH-RT: A framework for online node anomaly detection in provenance graphs via trend calibration},
   author={Caizhong Que and Guangfang Dong},
-  journal={...},
-  year={2024}
+  year={2025},
+  note={Under review}
 }
 ```
 
-This project is provided for academic research purposes.
+## License
 
+This project is provided for academic research purposes. See the LICENSE file for details (if applicable).
+
+## Notes
+
+- This repository is the official implementation of the paper. The code and results are fully reproducible.
+- The trend calibration module operates on low‑dimensional node state sequences (anomaly score, confidence, entropy) – **not** on raw graph embeddings – making it lightweight for online deployment.
+- The embedding reuse mechanism requires **Persistent Node Identifiers (PNI)** as defined in Eq. (17) of the paper. See `flash_rt/models/reuse.py` for implementation details.
+- For any questions, please open an issue or contact the authors.
